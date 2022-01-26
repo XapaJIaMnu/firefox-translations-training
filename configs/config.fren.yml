@@ -1,0 +1,200 @@
+####
+# Example of a production config
+# Change language pair, experiment name, datasets and other settings if needed
+# Training low resource languages might require more tuning of pipeline/training/configs
+###
+
+
+# These settings depend on execution environment
+# They are set in the Makefile
+root: ""
+cuda: ""
+deps: false
+gpus: ""
+numgpus: ""
+workspace: ""
+mariancmake: ""
+
+
+experiment:
+  name: fr-en-prod
+  src: fr
+  trg: en
+
+  teacher-ensemble: 2
+  # path to a pretrained backward model (optional)
+  backward-model: ""
+  # path to a pretrained vocabulary (optional)
+  vocab: ""
+
+  # limits per downloaded dataset
+  mono-max-sentences-src: 100000000
+  mono-max-sentences-trg: 20000000
+  # split corpus to parallelize translation
+  split-length: 2000000
+  # vocab training sample
+  spm-sample-size: 10000000
+
+  best-model: chrf
+
+  bicleaner:
+    default-threshold: 0.5
+    dataset-thresholds:
+      opus_CCAligned/v1: 0.7
+      opus_WikiMatrix/v1: 0.7
+      opus_OpenSubtitles/v2018: 0.8
+      opus_bible-uedin/v1: 0.7
+      # 0 = skip filtering
+      mtdata_ParaCrawl-paracrawl-9-eng-fra: 0
+
+
+marian-args:
+# these configs override pipeline/train/configs
+  training-backward:
+    # change based on available training data
+    after: 10e
+  training-teacher-base:
+    # remove for low resource languages or if training without augmentation
+    after: 2e
+# these configs override pipeline/translate/decoder.yml
+  decoding-backward:
+    # 24 Gb GPU, s2s model
+    mini-batch-words: 10000
+    # 2080ti or newer
+    precision: float16
+  decoding-teacher:
+    # 24 Gb GPU, ensemble of 2 teachers
+    mini-batch-words: 3000
+    # 2080ti or newer
+    precision: float16
+
+
+datasets:
+  # parallel training corpus
+  train:
+    - mtdata_Neulab-tedtalks_train-1-eng-fra
+    - mtdata_Statmt-commoncrawl_wmt13-1-fra-eng
+    - mtdata_ELRC-cordis_news-1-eng-fra
+    - mtdata_ELRC-artigos_visitportugal_2007-1-eng-fra
+    - mtdata_ELRC-development_funds_regional_policy-1-eng-fra
+    - mtdata_ELRC-charter_values_citizenship_integration-1-eng-fra
+    - mtdata_ELRC-euipo_law-1-eng-fra
+    - mtdata_ELRC-letter_rights_persons_arrested_or_detained-1-eng-fra
+    - mtdata_Tilde-ecb-2017-eng-fra
+    - mtdata_ELRC-localidades_2007-1-eng-fra
+    - mtdata_Statmt-news_commentary-15-eng-fra
+    - mtdata_ELRC-international_judicial_cooperation_civil_matters-1-eng-fra
+    - mtdata_ELRC-swedish_labour_part1-1-eng-fra
+    - mtdata_ELRC-eu_publications_medical_v2-1-eng-fra
+    - mtdata_ELRC-praias_2007-1-eng-fra
+    - mtdata_ELRC-antibiotic-1-eng-fra
+    - mtdata_ELRC-europarl_covid-1-eng-fra
+    - mtdata_ELRC-ec_europa_covid-1-eng-fra
+    - mtdata_Statmt-europarl-10-fra-eng
+    - mtdata_ELRC-presscorner_covid-1-eng-fra
+    - mtdata_ELRC-luxembourg.lu-1-eng-fra
+    - mtdata_ELRC-eur_lex_covid-1-eng-fra
+    - mtdata_ParaCrawl-paracrawl-9-eng-fra
+    - mtdata_ELRC-paesi_administration_foreign_immigrants-1-eng-fra
+    - mtdata_ELRC-parques_e_reservas_2007-1-eng-fra
+    - mtdata_ELRC-portuguese_legislation-1-eng-fra
+    - mtdata_ELRC-rights_arrested-1-eng-fra
+    - mtdata_Statmt-news_commentary-14-eng-fra
+    - mtdata_ELRC-swedish_social_security-1-eng-fra
+    - mtdata_ELRC-vaccination-1-eng-fra
+    - mtdata_ELRC-swedish_food-1-eng-fra
+    - mtdata_EU-dcep-1-eng-fra
+    - mtdata_ELRC-legal-1-eng-fra
+    - mtdata_ELRC-euipo_2017-1-eng-fra
+    - mtdata_Tilde-czechtourism-1-eng-fra
+    - mtdata_Tilde-worldbank-1-eng-fra
+    - mtdata_ELRC-sip-1-eng-fra
+    - mtdata_Tilde-ema-2016-eng-fra
+    - mtdata_ELRC-estatuto_dos_deputados-1-eng-fra
+    - mtdata_LinguaTools-wikititles-2014-eng-fra
+    - mtdata_ELRC-constituição_da_república_portuguesa-1-eng-fra
+    - mtdata_ELRC-emea-1-eng-fra
+    - mtdata_EU-eac_reference-1-eng-fra
+    - mtdata_ELRC-swedish_work_environment-1-eng-fra
+    - mtdata_EU-ecdc-1-eng-fra
+    - mtdata_Statmt-europarl_wmt13-7-fra-eng
+    - mtdata_Tilde-rapid-2016-eng-fra
+    - mtdata_ELRC-museus_2007-1-eng-fra
+    - mtdata_ELRC-arquitectura_2007-1-eng-fra
+    - mtdata_ELRC-convention_against_torture_other_cruel_inhuman_or_degrading_treatment_or_punishment_united_nations-1-eng-fra
+    - mtdata_ELRC-património_açores_2006-1-eng-fra
+    - mtdata_ELRC-euipo_list-1-eng-fra
+    - mtdata_ELRC-portal_oficial_turismo_españa_www.spain.info-1-eng-fra
+    - mtdata_EU-eac_forms-1-eng-fra
+    - mtdata_Statmt-news_commentary-16-eng-fra
+    - mtdata_ELRC-swedish_labour_part2-1-eng-fra
+    - mtdata_ELRC-cordis_results_brief-1-eng-fra
+    - mtdata_ELRC-wikipedia_health-1-eng-fra
+    - mtdata_Tilde-eesc-2017-eng-fra
+    # Opus datasets
+    - opus_WikiMatrix/v1
+    - opus_EUconst/v1
+    - opus_giga-fren/v2
+    - opus_ELITR-ECA/v1
+    - opus_EuroPat/v2
+    - opus_OpenSubtitles/v2018
+    - opus_TED2020/v1
+    - opus_DGT/v2019
+    - opus_Wikipedia/v1.0
+    - opus_Ubuntu/v14.10
+    - opus_infopankki/v1
+    - opus_wikimedia/v20210402
+    - opus_Books/v1
+    - opus_MultiUN/v1
+    - opus_ECB/v1
+    - opus_EUbookshop/v2
+    - opus_bible-uedin/v1
+    - opus_JRC-Acquis/v3.0
+    - opus_XLEnt/v1.1
+    - opus_News-Commentary/v16
+    - opus_TED2013/v1.1
+    - opus_GNOME/v1
+    - opus_Tanzil/v1
+    - opus_Tatoeba/v2021-07-22
+    - opus_CCAligned/v1
+    - opus_UNPC/v1.0
+    - opus_tico-19/v2020-10-28
+    - opus_CCMatrix/v1
+    - opus_Salome/v1
+    - opus_QED/v2.0a
+    - opus_TildeMODEL/v2018
+    - opus_GlobalVoices/v2018q4
+    - opus_UN/v20090831
+    - opus_EMEA/v3
+    - opus_RF/v1
+    - opus_PHP/v1
+    - opus_KDE4/v2
+  # datasets to merge for validation while training
+  devtest:
+    - sacrebleu_wmt14
+    - mtdata_UN-un_dev-1-eng-fra
+    - mtdata_Neulab-tedtalks_dev-1-eng-fra
+    - mtdata_Lindat-khresmoi_summary_dev-2-eng-fra
+  # datasets for evaluation
+  test:
+    - sacrebleu_wmt15
+    - mtdata_Neulab-tedtalks_test-1-eng-fra
+    - mtdata_UN-un_test-1-eng-fra
+    - mtdata_Lindat-khresmoi_summary_test-2-eng-fra
+  # monolingual datasets (ex. paracrawl-mono_paracrawl8, commoncrawl_wmt16, news-crawl_news.2020)
+  # to be translated by the teacher model
+  mono-src:
+    - news-crawl_news.2020
+    - news-crawl_news.2019
+    - news-crawl_news.2018
+  # to be translated by the backward model to augment teacher corpus with back-translations
+  # leave empty to skip augmentation step (high resource languages)
+  mono-trg:
+    - news-crawl_news.2020
+    - news-crawl_news.2019
+    - news-crawl_news.2018
+    - news-crawl_news.2017
+    - news-crawl_news.2016
+    - news-crawl_news.2015
+
+

@@ -1,0 +1,220 @@
+####
+# Example of a production config
+# Change language pair, experiment name, datasets and other settings if needed
+# Training low resource languages might require more tuning of pipeline/training/configs
+###
+
+
+# These settings depend on execution environment
+# They are set in the Makefile
+root: ""
+cuda: ""
+deps: false
+gpus: ""
+numgpus: ""
+workspace: ""
+mariancmake: ""
+
+
+experiment:
+  name: pl-en-prod
+  src: pl
+  trg: en
+
+  teacher-ensemble: 2
+  # path to a pretrained backward model (optional)
+  backward-model: ""
+  # path to a pretrained vocabulary (optional)
+  vocab: ""
+
+  # limits per downloaded dataset
+  mono-max-sentences-src: 100000000
+  mono-max-sentences-trg: 20000000
+  # split corpus to parallelize translation
+  split-length: 2000000
+  # vocab training sample
+  spm-sample-size: 10000000
+
+  best-model: chrf
+
+  bicleaner:
+    default-threshold: 0.5
+    dataset-thresholds:
+      opus_CCAligned/v1: 0.7
+      opus_WikiMatrix/v1: 0.7
+      opus_OpenSubtitles/v2018: 0.8
+      opus_bible-uedin/v1: 0.7
+      # 0 = skip filtering
+      mtdata_ParaCrawl-paracrawl-9-eng-fra: 0
+
+
+marian-args:
+# these configs override pipeline/train/configs
+  training-backward:
+    # change based on available training data
+    after: 10e
+  training-teacher-base:
+    # remove for low resource languages or if training without augmentation
+    after: 2e
+# these configs override pipeline/translate/decoder.yml
+  decoding-backward:
+    # 24 Gb GPU, s2s model
+    mini-batch-words: 10000
+    # 2080ti or newer
+    precision: float16
+  decoding-teacher:
+    # 24 Gb GPU, ensemble of 2 teachers
+    mini-batch-words: 3000
+    # 2080ti or newer
+    precision: float16
+
+
+datasets:
+  # parallel training corpus
+  train:
+    - mtdata_ELRC-polish_food_3-1-eng-pol
+    - mtdata_ELRC-interior_administration-1-eng-pol
+    - mtdata_ELRC-science_higher_education-1-eng-pol
+    - mtdata_ELRC-polish_central_statistical_publications-1-eng-pol
+    - mtdata_ELRC-pio_publication_cyprus_question-1-eng-pol
+    - mtdata_Tilde-czechtourism-1-eng-pol
+    - mtdata_ELRC-centre_research_development-1-eng-pol
+    - mtdata_ELRC-digital_affairs-1-eng-pol
+    - mtdata_ELRC-chancellery_prime_minister_poland-1-eng-pol
+    - mtdata_ELRC-cordis_results_brief-1-eng-pol
+    - mtdata_EU-dcep-1-eng-pol
+    - mtdata_ELRC-emea-1-eng-pol
+    - mtdata_ELRC-eu_publications_medical_v2-1-eng-pol
+    - mtdata_ELRC-polish_investment_trade-1-eng-pol
+    - mtdata_ELRC-polish_foreign_affairs_youth_2011_report-1-eng-pol
+    - mtdata_ELRC-eur_lex_covid-1-eng-pol
+    - mtdata_ELRC-presscorner_covid-1-eng-pol
+    - mtdata_ELRC-development-1-eng-pol
+    - mtdata_Statmt-europarl-10-pol-eng
+    - mtdata_Statmt-newsdev_enpl-2020-eng-pol
+    - mtdata_ELRC-polish_food_4_food_policy-1-eng-pol
+    - mtdata_ELRC-science_centre-1-eng-pol
+    - mtdata_EU-eac_forms-1-eng-pol
+    - mtdata_EU-ecdc-1-eng-pol
+    - mtdata_ELRC-audiovisual_institute-1-eng-pol
+    - mtdata_ELRC-health_fund-1-eng-pol
+    - mtdata_ELRC-letter_rights_persons_arrested_or_detained-1-eng-pol
+    - mtdata_ELRC-natolin_centre-1-eng-pol
+    - mtdata_ELRC-citizens_information_board-1-eng-pol
+    - mtdata_ELRC-geoportal.gov.pl-1-eng-pol
+    - mtdata_ELRC-defence-1-eng-pol
+    - mtdata_ELRC-central_statistical-1-eng-pol
+    - mtdata_ELRC-vaccination-1-eng-pol
+    - mtdata_ELRC-polish_phrase_book_administrative_staff_local_government_units-1-eng-pol
+    - mtdata_ELRC-polish_foreign_affairs_historical-1-eng-pol
+    - mtdata_ELRC-polish_foreign_affairs_reports_en_pl-1-eng-pol
+    - mtdata_EU-eac_reference-1-eng-pol
+    - mtdata_ELRC-justice-1-eng-pol
+    - mtdata_ELRC-swedish_social_security-1-eng-pol
+    - mtdata_ELRC-science_poland-1-eng-pol
+    - mtdata_ELRC-europarl_covid-1-eng-pol
+    - mtdata_ELRC-centre_nuclear_research-1-eng-pol
+    - mtdata_ELRC-ing_polish_art_foundation-1-eng-pol
+    - mtdata_LinguaTools-wikititles-2014-eng-pol
+    - mtdata_ELRC-digitization-1-eng-pol
+    - mtdata_ELRC-commissioner_human_rights-1-eng-pol
+    - mtdata_Tilde-rapid-2019-eng-pol
+    - mtdata_ELRC-polish_food_2-1-eng-pol
+    - mtdata_ELRC-coronavirus_law_poland-1-eng-pol
+    - mtdata_ELRC-procurement_2-1-eng-pol
+    - mtdata_ELRC-export_promotion_portal_poland-1-eng-pol
+    - mtdata_ELRC-agriculture_rural_development-1-eng-pol
+    - mtdata_ELRC-financial_stability_bank_poland_2013_14-1-eng-pol
+    - mtdata_ELRC-employment_poland_2009_report-1-eng-pol
+    - mtdata_ELRC-wikipedia_health-1-eng-pol
+    - mtdata_ELRC-business_poland-1-eng-pol
+    - mtdata_ELRC-antibiotic-1-eng-pol
+    - mtdata_ELRC-employment_services_poland_eures-1-eng-pol
+    - mtdata_Tilde-ema-2016-eng-pol
+    - mtdata_ParaCrawl-paracrawl-9-eng-pol
+    - mtdata_ELRC-swedish_food-1-eng-pol
+    - mtdata_ELRC-cordis_news-1-eng-pol
+    - mtdata_Tilde-eesc-2017-eng-pol
+    - mtdata_ELRC-development_funds_regional_policy-1-eng-pol
+    - mtdata_ELRC-regional_development-1-eng-pol
+    - mtdata_ELRC-foreign_affairs-1-eng-pol
+    - mtdata_ELRC-pkn_orlen-1-eng-pol
+    - mtdata_ELRC-civil_aviation_regulations-1-eng-pol
+    - mtdata_ELRC-procurement_1-1-eng-pol
+    - mtdata_ELRC-us_embassy_consulate_poland-1-eng-pol
+    - mtdata_ELRC-security_bureau-1-eng-pol
+    - mtdata_Statmt-wiki_titles-2-pol-eng
+    - mtdata_ELRC-polish_aid-1-eng-pol
+    - mtdata_Tilde-worldbank-1-eng-pol
+    - mtdata_ELRC-culture_heritage-1-eng-pol
+    - mtdata_ELRC-institute_mathematics_polish_academy_sciences-1-eng-pol
+    - mtdata_ELRC-digital_archives-1-eng-pol
+    - mtdata_ELRC-polish_tourism_organisation-1-eng-pol
+    - mtdata_ELRC-euipo_2017-1-eng-pol
+    - mtdata_ELRC-rights_arrested-1-eng-pol
+    - mtdata_ELRC-swedish_work_environment-1-eng-pol
+    - mtdata_ELRC-compendium_social_insurance_institution-1-eng-pol
+    - mtdata_ELRC-polish_food-1-eng-pol
+    - mtdata_ELRC-state_marine_accident_investigation_commission-1-eng-pol
+    - mtdata_Tilde-ecb-2017-eng-pol
+    - mtdata_ELRC-polish_foreign_affairs_regional-1-eng-pol
+    - mtdata_ELRC-ec_europa_covid-1-eng-pol
+    - mtdata_Neulab-tedtalks_train-1-eng-pol
+    - mtdata_ELRC-financial_stability_bank_poland_2015_16-1-eng-pol
+
+    # Opus datasets
+    - opus_TED2020/v1
+    - opus_OpenSubtitles/v2018
+    - opus_EMEA/v3
+    - opus_CCMatrix/v1
+    - opus_Books/v1
+    - opus_CCAligned/v1
+    - opus_GNOME/v1
+    - opus_Tanzil/v1
+    - opus_Tatoeba/v2021-07-22
+    - opus_bible-uedin/v1
+    - opus_EUbookshop/v2
+    - opus_EUconst/v1
+    - opus_DGT/v2019
+    - opus_JRC-Acquis/v3.0
+    - opus_EuroPat/v2
+    - opus_ECB/v1
+    - opus_XLEnt/v1.1
+    - opus_KDE4/v2
+    - opus_Wikipedia/v1.0
+    - opus_QED/v2.0a
+    - opus_TildeMODEL/v2018
+    - opus_wikimedia/v20210402
+    - opus_WikiMatrix/v1
+    - opus_Ubuntu/v14.10
+    - opus_GlobalVoices/v2018q4
+    - opus_ELITR-ECA/v1
+    - opus_PHP/v1
+    - opus_TED2013/v1.1
+  # datasets to merge for validation while training
+  devtest:
+    - sacrebleu_wmt14
+    - mtdata_Neulab-tedtalks_dev-1-eng-pol
+    - mtdata_Lindat-khresmoi_summary_dev-2-eng-pol
+  # datasets for evaluation
+  test:
+    - sacrebleu_wmt15
+    - mtdata_Neulab-tedtalks_test-1-eng-pol
+    - mtdata_Lindat-khresmoi_summary_test-2-eng-pol
+  # monolingual datasets (ex. paracrawl-mono_paracrawl8, commoncrawl_wmt16, news-crawl_news.2020)
+  # to be translated by the teacher model
+  mono-src:
+    - news-crawl_news.2020
+    - news-crawl_news.2019
+    - news-crawl_news.2018
+  # to be translated by the backward model to augment teacher corpus with back-translations
+  # leave empty to skip augmentation step (high resource languages)
+  mono-trg:
+    - news-crawl_news.2020
+    - news-crawl_news.2019
+    - news-crawl_news.2018
+    - news-crawl_news.2017
+    - news-crawl_news.2016
+    - news-crawl_news.2015
+
+
