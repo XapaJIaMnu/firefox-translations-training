@@ -4,14 +4,14 @@
 SHELL=/bin/bash
 
 ### 1. change these settings
-SHARED_ROOT=/data/rw/group-maml
+SHARED_ROOT=/mnt/nanna0/nbogoych/data
 CUDA_DIR=/usr/local/cuda
 NUM_GPUS=8
 # (optional) override available GPU ids, example GPUS=0 2 5 6
 GPUS=
-WORKSPACE=12000
-CLUSTER_CORES=16
-CONFIG=configs/config.prod.yml
+WORKSPACE=18000
+CLUSTER_CORES=1
+CONFIG=configs/config.fren.yml
 CONDA_PATH=$(SHARED_ROOT)/mambaforge
 SNAKEMAKE_OUTPUT_CACHE=$(SHARED_ROOT)/cache
 # for CSD3 cluster
@@ -74,8 +74,8 @@ run-local:
 	  --use-conda \
 	  --resources gpu=$(NUM_GPUS) \
 	  --configfile $(CONFIG) \
-	  --config $(CONFIG_OPTIONS) deps=true \
-	  --cores all \
+	  --config $(CONFIG_OPTIONS) \
+	  --cores 1 \
 	  --cache \
 	  --reason \
 	  $(TARGET)
