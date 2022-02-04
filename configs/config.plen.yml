@@ -152,7 +152,7 @@ datasets:
     - mtdata_ELRC-polish_tourism_organisation-1-eng-pol
     - mtdata_ELRC-euipo_2017-1-eng-pol
     - mtdata_ELRC-rights_arrested-1-eng-pol
-    - mtdata_ELRC-swedish_work_environment-1-eng-pol
+#    - mtdata_ELRC-swedish_work_environment-1-eng-pol
     - mtdata_ELRC-compendium_social_insurance_institution-1-eng-pol
     - mtdata_ELRC-polish_food-1-eng-pol
     - mtdata_ELRC-state_marine_accident_investigation_commission-1-eng-pol
@@ -193,12 +193,12 @@ datasets:
     - opus_TED2013/v1.1
   # datasets to merge for validation while training
   devtest:
-    - sacrebleu_wmt14
+    - sacrebleu_wmt20/dev
     - mtdata_Neulab-tedtalks_dev-1-eng-pol
     - mtdata_Lindat-khresmoi_summary_dev-2-eng-pol
   # datasets for evaluation
   test:
-    - sacrebleu_wmt15
+    - sacrebleu_wmt20
     - mtdata_Neulab-tedtalks_test-1-eng-pol
     - mtdata_Lindat-khresmoi_summary_test-2-eng-pol
   # monolingual datasets (ex. paracrawl-mono_paracrawl8, commoncrawl_wmt16, news-crawl_news.2020)
