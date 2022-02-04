@@ -115,7 +115,7 @@ datasets:
     - mtdata_ELRC-constituição_da_república_portuguesa-1-eng-fra
     - mtdata_ELRC-emea-1-eng-fra
     - mtdata_EU-eac_reference-1-eng-fra
-    - mtdata_ELRC-swedish_work_environment-1-eng-fra
+    # - mtdata_ELRC-swedish_work_environment-1-eng-fra # https://github.com/thammegowda/mtdata/issues/95
     - mtdata_EU-ecdc-1-eng-fra
     - mtdata_Statmt-europarl_wmt13-7-fra-eng
     - mtdata_Tilde-rapid-2016-eng-fra
@@ -124,7 +124,7 @@ datasets:
     - mtdata_ELRC-convention_against_torture_other_cruel_inhuman_or_degrading_treatment_or_punishment_united_nations-1-eng-fra
     - mtdata_ELRC-património_açores_2006-1-eng-fra
     - mtdata_ELRC-euipo_list-1-eng-fra
-    - mtdata_ELRC-portal_oficial_turismo_españa_www.spain.info-1-eng-fra
+    #- mtdata_ELRC-portal_oficial_turismo_españa_www.spain.info-1-eng-fra # not found
     - mtdata_EU-eac_forms-1-eng-fra
     - mtdata_Statmt-news_commentary-16-eng-fra
     - mtdata_ELRC-swedish_labour_part2-1-eng-fra
