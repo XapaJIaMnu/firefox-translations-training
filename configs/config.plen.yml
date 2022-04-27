@@ -28,7 +28,7 @@ experiment:
   vocab: ""
 
   # limits per downloaded dataset
-  mono-max-sentences-src: 100000000
+  mono-max-sentences-src: 100000000 # @TODO do we want limits really on those?
   mono-max-sentences-trg: 20000000
   # split corpus to parallelize translation
   split-length: 2000000
@@ -38,14 +38,12 @@ experiment:
   best-model: chrf
 
   bicleaner:
-    default-threshold: 0.5
+    default-threshold: 0 # Skip bicleaner by default
     dataset-thresholds:
       opus_CCAligned/v1: 0.7
       opus_WikiMatrix/v1: 0.7
       opus_OpenSubtitles/v2018: 0.8
       opus_bible-uedin/v1: 0.7
-      # 0 = skip filtering
-      mtdata_ParaCrawl-paracrawl-9-eng-fra: 0
 
 
 marian-args:
@@ -61,12 +59,12 @@ marian-args:
     # 24 Gb GPU, s2s model
     mini-batch-words: 10000
     # 2080ti or newer
-    precision: float16
+    precision: float32 # There is a bug sometimes that needs to be traced with fp16 decoding.
   decoding-teacher:
     # 24 Gb GPU, ensemble of 2 teachers
     mini-batch-words: 3000
     # 2080ti or newer
-    precision: float16
+    precision: float32
 
 
 datasets:
